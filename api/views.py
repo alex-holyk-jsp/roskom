@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 
 from .models import Domain
 from .serializers import DomainSerializer
@@ -19,3 +20,11 @@ class DomainViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
+
+    def update(self, request, *args, **kwargs):
+        print('>>>> update')
+        pass
+
+    def partial_update(self, request, *args, **kwargs):
+        print('>>>> partial_update')
+        pass
