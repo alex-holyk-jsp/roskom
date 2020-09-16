@@ -23,11 +23,3 @@ class DomainViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             return BaseDomainSerializer
         return AnonymousUserDomainSerializer
-
-    def update(self, request, *args, **kwargs):
-        print('>>>> update')
-        pass
-
-    def partial_update(self, request, *args, **kwargs):
-        print('>>>> partial_update')
-        pass
