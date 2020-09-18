@@ -13,6 +13,7 @@ class Domain(models.Model):
     domain = models.CharField(max_length=200, blank=True, default='')
     ip = models.CharField(max_length=15)
     owner_ip = models.CharField(max_length=15)
+    owner_email = models.EmailField(max_length=200)
     status=models.CharField(choices=STATUS_CHOICES, default='requested', max_length=50)
 
     class Meta:

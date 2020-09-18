@@ -1,10 +1,14 @@
 from rest_framework import viewsets, permissions
+from rest_framework.response import Response
 
 from .models import Domain
 from .serializers import BaseDomainSerializer, AnonymousUserDomainSerializer
-from .helpers import get_client_ip
+from .helpers import get_client_ip, send_email
 
-# Create your views here.
+
+STATUS_APPROVED = 'approved'
+
+
 class DomainViewSet(viewsets.ModelViewSet):
     queryset = Domain.objects.all()
 
@@ -23,3 +27,20 @@ class DomainViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             return BaseDomainSerializer
         return AnonymousUserDomainSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        old_status = instance.status
+        new_status = request.data.get('status')
+
+        if old_status != STATUS_APPROVED and new_status == STATUS_APPROVED:
+            send_email(instance.owner_email)
+
+        instance.status = new_status
+        instance.save()
+
+        self.perform_update(serializer)
+        return Response(serializer.data)
